@@ -1,15 +1,17 @@
+## Problem Statement:
 
-## Problem Statement :
+Design a `class` that represents a bank account with the following attributes:
 
-Define a `class` to represent a bank account which includes the following members as :
-
-- `Name` of the depositor
+- `Depositor's Name`
 - `Account Number`
-- `Withdrawal amount`
-- Balance amount in the account Member Functions:
-   - To assign `initial values`
-   - To `deposit`an amount
-   - To `withdraw an amount` after checking the balance
-   - To display `name` and `balance`.
+- `Withdrawal Amount`
+- `Current Account Balance`
 
-Implement the program by using features of `OOP in C++`
+The class should have the following member functions:
+
+- A function to set the `initial values` for the account.
+- A function to `deposit` money into the account.
+- A function to `withdraw` money, which checks the balance before completing the transaction.
+- A function to display the `account holder's name` and the `current balance`.
+
+Implement this program utilizing the principles of `Object-Oriented Programming (OOP) in C++`.
