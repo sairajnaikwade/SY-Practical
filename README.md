@@ -8,4 +8,4 @@ College Repository
   - `Assignment` : [ [Click Here](/OOP-Practical) ]
 - **DSPS**( Data Structures and Problem Solving Lab)
   - **Course Code** : `PCCO205`
-  - `Assignment` : [ [Click Here](/DSPS Practical) ]
+  - `Assignment` : [ [Click Here](/DSPS-Practical) ]
