@@ -1,245 +1,273 @@
 #include <iostream>
-#include <string>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
-const int MAX_RECORDS = 100;
+const int MAX_SUBJECTS = 5;
+const int MAX_STUDENTS = 10;
+const int MAX_ASSIGNMENTS = 10;
+const int MAX_QUESTIONS = 7;
 
 class Student {
 protected:
     string name;
     int rollNo;
-    string subject;
+    string subjects[MAX_SUBJECTS];
+    int numSubjects;
 
 public:
-    virtual void buildMasterTable() = 0;
-    virtual void listTable() const = 0;
-    virtual void insertEntry() = 0;
-    virtual void deleteEntry(int roll) = 0;
-    virtual void editEntry(int roll) = 0;
-    virtual void searchRecord(int roll) const = 0;
+    Student() : numSubjects(0), rollNo(0) {}
 
-    virtual ~Student() {}
+    virtual void input() {
+        cout << "Enter student name: ";
+        cin >> name;
+        cout << "Enter roll number: ";
+        cin >> rollNo;
+        cout << "Enter number of subjects: ";
+        cin >> numSubjects;
+        for (int i = 0; i < numSubjects; i++) {
+            cout << "Enter subject " << i + 1 << ": ";
+            cin >> subjects[i];
+        }
+    }
+
+    virtual void display() {
+        cout << setw(15) << name << setw(10) << rollNo << setw(15);
+        for (int i = 0; i < numSubjects; i++) {
+            cout << subjects[i] << " ";
+        }
+        cout << endl;
+    }
+
+    virtual int getRollNo() {
+        return rollNo;
+    }
+
+    virtual void edit() {
+        input();
+    }
 };
 
-class Marks : public Student {
+class DerivedStudent : public Student {
 private:
-    struct Record {
-        string name;
-        int rollNo;
-        string subject;
-        string subjectCode;
-        int internalMarks;
-        int universityMarks;
-
-        // Initialize fields separately in methods, avoiding shorthand constructors
-        void setDetails(string n, int r, string s, string sc, int im, int um) {
-            name = n;
-            rollNo = r;
-            subject = s;
-            subjectCode = sc;
-            internalMarks = im;
-            universityMarks = um;
-        }
-    };
-
-    Record records[MAX_RECORDS];
-    int recordCount;
+    string subjectCode[MAX_SUBJECTS];
+    int internalMarks[MAX_SUBJECTS];
+    int externalMarks[MAX_SUBJECTS];
+    int finalMarks[MAX_SUBJECTS];
 
 public:
-    Marks() {
-        recordCount = 0;
+    void input() override {
+        Student::input();
+        for (int i = 0; i < numSubjects; i++) {
+            cout << "Enter subject code for " << subjects[i] << ": ";
+            cin >> subjectCode[i];
+
+            // Input assignment marks
+            int totalAssignmentMarks = 0;
+            cout << "Enter " << MAX_ASSIGNMENTS << " assignment marks (out of 10 each) for " << subjects[i] << ":\n";
+            for (int j = 0; j < MAX_ASSIGNMENTS; j++) {
+                int mark;
+                cout << "Assignment " << (j + 1) << ": ";
+                cin >> mark;
+                totalAssignmentMarks += mark;
+            }
+            internalMarks[i] = (totalAssignmentMarks * 30) / 100;
+
+            // Input question marks
+            int totalQuestionMarks = 0;
+            cout << "Enter marks for " << MAX_QUESTIONS << " questions (out of 10 each) for " << subjects[i] << ":\n";
+            for (int j = 0; j < MAX_QUESTIONS; j++) {
+                int questionMark;
+                cout << "Question " << (j + 1) << ": ";
+                cin >> questionMark;
+                totalQuestionMarks += questionMark;
+            }
+            externalMarks[i] = totalQuestionMarks;
+
+            // Calculate final marks
+            finalMarks[i] = internalMarks[i] + externalMarks[i];
+        }
     }
 
-    void buildMasterTable() override {
-        int n;
-        cout << "Enter the number of students: ";
-        cin >> n;
-
-        if (n > MAX_RECORDS) {
-            cout << "Exceeds maximum capacity! Only " << MAX_RECORDS << " entries allowed.\n";
-            return;
+    void display() override {
+        Student::display();
+        cout << setw(20) << "Subject Code" << setw(25) << "Internal Marks" << setw(30) << "External Marks" << setw(35) << "Final Marks" << endl;
+        for (int i = 0; i < numSubjects; i++) {
+            cout << setw(20) << subjectCode[i] << setw(25) << internalMarks[i]
+                 << setw(30) << externalMarks[i] << setw(35) << finalMarks[i] << endl;
         }
+    }
 
-        for (int i = 0; i < n; ++i) {
-            Record rec;
-            string name, subject, subjectCode;
-            int rollNo, internalMarks, universityMarks;
+    void edit() override {
+        Student::edit();
+        for (int i = 0; i < numSubjects; i++) {
+            cout << "Enter new subject code for " << subjects[i] << ": ";
+            cin >> subjectCode[i];
 
+            // Recalculate internal marks
+            int totalAssignmentMarks = 0;
+            cout << "Enter " << MAX_ASSIGNMENTS << " assignment marks (out of 10 each) for " << subjects[i] << ":\n";
+            for (int j = 0; j < MAX_ASSIGNMENTS; j++) {
+                int mark;
+                cout << "Assignment " << (j + 1) << ": ";
+                cin >> mark;
+                totalAssignmentMarks += mark;
+            }
+            internalMarks[i] = (totalAssignmentMarks * 30) / 100;
+
+            // Recalculate external marks
+            int totalQuestionMarks = 0;
+            cout << "Enter marks for " << MAX_QUESTIONS << " questions (out of 10 each) for " << subjects[i] << ":\n";
+            for (int j = 0; j < MAX_QUESTIONS; j++) {
+                int questionMark;
+                cout << "Question " << (j + 1) << ": ";
+                cin >> questionMark;
+                totalQuestionMarks += questionMark;
+            }
+            externalMarks[i] = totalQuestionMarks;
+
+            // Recalculate final marks
+            finalMarks[i] = internalMarks[i] + externalMarks[i];
+        }
+    }
+};
+
+class Management {
+private:
+    DerivedStudent students[MAX_STUDENTS];
+    int studentCount;
+
+public:
+    Management() : studentCount(0) {}
+
+    void buildMasterTable() {
+        int num;
+        cout << "How many students do you want to enter? ";
+        cin >> num;
+        for (int i = 0; i < num; i++) {
             cout << "\nEnter details for student " << i + 1 << ":\n";
-            cout << "Name: ";
-            cin.ignore();
-            getline(cin, name);
-            cout << "Roll Number: ";
-            cin >> rollNo;
-            cout << "Subject: ";
-            cin.ignore();
-            getline(cin, subject);
-            cout << "Subject Code: ";
-            getline(cin, subjectCode);
-            cout << "Internal Assessment Marks: ";
-            cin >> internalMarks;
-            cout << "University Examination Marks: ";
-            cin >> universityMarks;
-
-            rec.setDetails(name, rollNo, subject, subjectCode, internalMarks, universityMarks);
-            records[recordCount++] = rec;
+            students[studentCount].input();
+            studentCount++;
         }
     }
 
-    void listTable() const override {
-        if (recordCount == 0) {
-            cout << "No records available!\n";
-            return;
-        }
-
+    void listTable() {
         cout << "\nMaster Table:\n";
-        cout << left << setw(15) << "Name" << setw(10) << "Roll No" << setw(15) << "Subject" 
-             << setw(12) << "Sub Code" << setw(10) << "Internal" << setw(10) << "University" << endl;
-        for (int i = 0; i < recordCount; ++i) {
-            const Record& rec = records[i];
-            cout << left << setw(15) << rec.name << setw(10) << rec.rollNo << setw(15) << rec.subject 
-                 << setw(12) << rec.subjectCode << setw(10) << rec.internalMarks << setw(10) << rec.universityMarks << endl;
+        cout << setw(15) << "Student Name" << setw(10) << "Roll No" << setw(15) << "Subjects" << endl;
+        for (int i = 0; i < studentCount; i++) {
+            students[i].display();
         }
     }
 
-    void insertEntry() override {
-        if (recordCount >= MAX_RECORDS) {
-            cout << "No space to add more records.\n";
+    void insertEntry() {
+        if (studentCount >= MAX_STUDENTS) {
+            cout << "Student limit reached, cannot add more students.\n";
+            return;
+        }
+        cout << "\nEnter details for new student:\n";
+        students[studentCount].input();
+        studentCount++;
+    }
+
+    void deleteEntry() {
+        int rollNo;
+        cout << "\nEnter roll number to delete: ";
+        cin >> rollNo;
+
+        int pos = -1;
+        for (int i = 0; i < studentCount; i++) {
+            if (students[i].getRollNo() == rollNo) {
+                pos = i;
+                break;
+            }
+        }
+
+        if (pos == -1) {
+            cout << "Student not found.\n";
             return;
         }
 
-        Record rec;
-        string name, subject, subjectCode;
-        int rollNo, internalMarks, universityMarks;
+        for (int i = pos; i < studentCount - 1; i++) {
+            students[i] = students[i + 1];
+        }
+        studentCount--;
+        cout << "Student record deleted.\n";
+    }
 
-        cout << "\nEnter details for new student:\n";
-        cout << "Name: ";
-        cin.ignore();
-        getline(cin, name);
-        cout << "Roll Number: ";
+    void editEntry() {
+        int rollNo;
+        cout << "\nEnter roll number to edit: ";
         cin >> rollNo;
-        cout << "Subject: ";
-        cin.ignore();
-        getline(cin, subject);
-        cout << "Subject Code: ";
-        getline(cin, subjectCode);
-        cout << "Internal Assessment Marks: ";
-        cin >> internalMarks;
-        cout << "University Examination Marks: ";
-        cin >> universityMarks;
 
-        rec.setDetails(name, rollNo, subject, subjectCode, internalMarks, universityMarks);
-        records[recordCount++] = rec;
-
-        cout << "New entry added successfully!\n";
-    }
-
-    void deleteEntry(int roll) override {
-        int index = -1;
-        for (int i = 0; i < recordCount; ++i) {
-            if (records[i].rollNo == roll) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index != -1) {
-            for (int i = index; i < recordCount - 1; ++i) {
-                records[i] = records[i + 1];
-            }
-            --recordCount;
-            cout << "Entry with Roll Number " << roll << " deleted successfully!\n";
-        } else {
-            cout << "No record found with Roll Number " << roll << "!\n";
-        }
-    }
-
-    void editEntry(int roll) override {
-        int index = -1;
-        for (int i = 0; i < recordCount; ++i) {
-            if (records[i].rollNo == roll) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index != -1) {
-            Record& rec = records[index];
-            string name, subject, subjectCode;
-            int internalMarks, universityMarks;
-
-            cout << "Editing entry for Roll Number " << roll << ":\n";
-            cout << "New Name (current: " << rec.name << "): ";
-            cin.ignore();
-            getline(cin, name);
-            cout << "New Subject (current: " << rec.subject << "): ";
-            getline(cin, subject);
-            cout << "New Subject Code (current: " << rec.subjectCode << "): ";
-            getline(cin, subjectCode);
-            cout << "New Internal Assessment Marks (current: " << rec.internalMarks << "): ";
-            cin >> internalMarks;
-            cout << "New University Examination Marks (current: " << rec.universityMarks << "): ";
-            cin >> universityMarks;
-
-            rec.setDetails(name, rec.rollNo, subject, subjectCode, internalMarks, universityMarks);
-            cout << "Entry updated successfully!\n";
-        } else {
-            cout << "No record found with Roll Number " << roll << "!\n";
-        }
-    }
-
-    void searchRecord(int roll) const override {
-        for (int i = 0; i < recordCount; ++i) {
-            if (records[i].rollNo == roll) {
-                const Record& rec = records[i];
-                cout << "\nRecord found:\n";
-                cout << left << setw(15) << "Name" << setw(10) << "Roll No" << setw(15) << "Subject" 
-                     << setw(12) << "Sub Code" << setw(10) << "Internal" << setw(10) << "University" << endl;
-                cout << left << setw(15) << rec.name << setw(10) << rec.rollNo << setw(15) << rec.subject 
-                     << setw(12) << rec.subjectCode << setw(10) << rec.internalMarks << setw(10) << rec.universityMarks << endl;
+        for (int i = 0; i < studentCount; i++) {
+            if (students[i].getRollNo() == rollNo) {
+                students[i].edit();
                 return;
             }
         }
-        cout << "No record found with Roll Number " << roll << "!\n";
+
+        cout << "Student not found.\n";
+    }
+
+    void searchRecord() {
+        int rollNo;
+        cout << "\nEnter roll number to search: ";
+        cin >> rollNo;
+
+        for (int i = 0; i < studentCount; i++) {
+            if (students[i].getRollNo() == rollNo) {
+                students[i].display();
+                return;
+            }
+        }
+
+        cout << "Student not found.\n";
     }
 };
 
 int main() {
-    Marks marks;
-    int choice, roll;
+    Management manage;
+    int choice;
 
     do {
         cout << "\nMenu:\n";
-        cout << "1. Build Master Table\n2. List Table\n3. Insert New Entry\n4. Delete Entry\n";
-        cout << "5. Edit Entry\n6. Search for a Record\n7. Exit\n";
+        cout << "1. Build Master Table\n";
+        cout << "2. List Table\n";
+        cout << "3. Insert New Entry\n";
+        cout << "4. Delete Old Entry\n";
+        cout << "5. Edit an Entry\n";
+        cout << "6. Search for a Record\n";
+        cout << "7. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
         switch (choice) {
-            case 1: marks.buildMasterTable(); break;
-            case 2: marks.listTable(); break;
-            case 3: marks.insertEntry(); break;
+            case 1:
+                manage.buildMasterTable();
+                break;
+            case 2:
+                manage.listTable();
+                break;
+            case 3:
+                manage.insertEntry();
+                break;
             case 4:
-                cout << "Enter Roll Number to delete: ";
-                cin >> roll;
-                marks.deleteEntry(roll);
+                manage.deleteEntry();
                 break;
             case 5:
-                cout << "Enter Roll Number to edit: ";
-                cin >> roll;
-                marks.editEntry(roll);
+                manage.editEntry();
                 break;
             case 6:
-                cout << "Enter Roll Number to search: ";
-                cin >> roll;
-                marks.searchRecord(roll);
+                manage.searchRecord();
                 break;
-            case 7: cout << "Exiting...\n"; break;
-            default: cout << "Invalid choice! Try again.\n";
+            case 7:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice. Try again.\n";
         }
     } while (choice != 7);
 
-    return 0;
+  return 0;
 }
