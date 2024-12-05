@@ -1,123 +1,62 @@
 #include<iostream>
 using namespace std;
-
-class complex{    
-public:
-int real;
-int imaginary;
-
-complex(){
-  real=0;
-  imaginary=0;   
-}
-
-void input(int x){
-    cout<<"Equation: "<<x+1<<endl;
-    cout<<"Enter the Real Part: ";
-    cin>>real;
-    cout<<"Enter the Imaginary Part: ";
-    cin>>imaginary;
-    display();
-}
-
-void display(){
-    cout<<real<<" + i("<<imaginary<<")"<<endl;
-}
-
-complex operator *(complex &a){
-   complex temp;
-
-   temp.real=(real * a.real) - (imaginary*a.imaginary);
-   temp.imaginary=(real * a.imaginary) + (imaginary * a.real);
-
-    return temp;
-}
-
-complex operator +(complex &a){
-  complex temp;
-  
-  temp.real=(real+a.real);
-  temp.imaginary=(imaginary+a.imaginary);
-
-  return temp;
-}
-
-complex operator -(complex &a){
-  complex temp;
-  
-  temp.real=(real-a.real);
-  temp.imaginary=(imaginary-a.imaginary);
-
-  return temp;
-}
-
-
+class complex
+{
+    public:
+    int real,img;
+    int rres,ires;
+    complex()
+    {
+        real=0;
+        img=0;
+    }
+    complex(int r,int i)
+    {
+        real=r;
+        img=i;
+    }
+    void display()
+    {
+        
+    }
+    void operator +(complex &c)
+    {
+        rres=real+c.real;
+        ires=img+c.img;
+        cout<<"Addition="<<rres<<"+"<<ires<<"i"<<endl;
+    }
+    void operator -(complex &d)
+    {
+        rres=real-d.real;
+        ires=img-d.img;
+        cout<<"Subtraction="<<rres<<"+"<<ires<<"i"<<endl;
+    }
+    friend void operator *(complex &obj1, complex &obj2);
+    friend void operator /(complex &n1, complex &n2);
 };
-
-int main(){
-    complex number[3];
-    int ch;
-    do
-    {   cout<<"Menu\n1.Addition\n2.Substraction\n3.Multiply\n4.Divide\n5.Exit\n";
-        cin>>ch;
-         switch (ch)
-        {
-         
-        case 1:
-
-        for(int i=0;i<2;i++)
-        {
-           number[i].input(i); 
-        }
-
-        number[2] = number[0] + number[1];
-
-        cout<<"\nAddition is: \n";
-        number[2].display();
-        
-        break; 
-
-        case 2:
-
-         for(int i=0;i<2;i++)
-        {
-           number[i].input(i); 
-        }
-
-        number[2] = number[0] - number[1];
-
-        cout<<"\nSubstraction is: \n";
-        number[2].display();
-        
-        break; 
-
-        case 3:
-
-        for(int i=0;i<2;i++)
-        {
-           number[i].input(i); 
-        }
-
-        number[2] = number[0] * number[1];
-
-        cout<<"\nAnswer is: \n";
-        number[2].display();
-        
-        break; 
-
-        case 4:
-
-        break;
-
-        case 5:
-        break; 
-       
-        default:
-            cout<<"Wrong choice...\n";
-            break;
-        }
-    } while (ch!=5);
-    
-
-    return 0;
+void operator *(complex &obj1,complex &obj2)
+{
+    obj1.rres=((obj1.real*obj2.real)-(obj1.img*obj2.img));
+    obj1.ires=((obj1.real*obj2.img)+(obj1.img*obj2.real));
+    if(obj1.ires>0)
+    {
+        cout<<"Multiplication="<<obj1.rres<<"+"<<obj1.ires<<"i"<<endl;
+    }else{
+        cout<<"Multiplication="<<obj1.rres<<""<<obj1.ires<<"i"<<endl;
+    }
+}
+void operator /(complex &n1, complex &n2)
+{
+    int a=(n2.real*n2.real)-(-(n2.img*n2.img));
+    n1.rres=((n1.real*n2.real)-(n1.img*(-n2.img)));
+    n1.ires=((n1.real*(-n2.img))+(n1.img*n2.real));
+    cout<<"Division="<<"("<<n1.rres<<"/"<<a<<")"<<"+("<<n1.ires<<"/"<<a<<")"<<"i"<<endl;
+}
+int main()
+{
+    class complex no1(2,3),no2(4,2);
+    no1+no2;
+    no1-no2;
+    no1*no2;
+    no1/no2;
 }
