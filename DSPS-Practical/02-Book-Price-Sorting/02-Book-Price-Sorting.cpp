@@ -1,187 +1,150 @@
-#include <iostream>
-#include <string>
+//library management system
+#include<iostream>
+#include<string>
 using namespace std;
-
-class Library {
-public:
-    string book_name;
-    float price;
-
-     void add_book() {
-        cout << "  • Book Name: ";
-        cin >> book_name;
-        cout << "  • Book Prize: ";
-        cin >> price;
+class book
+{
+    public:
+    string title;
+    int cost;
+    void accept()
+    {
+        cout<<"Enter title:";
+        cin>>title;
+        cout<<"Enter cost:";
+        cin>>cost;
     }
-    
-    static void print_shelf(Library shelf[], int entries) {
-        cout << "----------------------------------------------------------" << endl;
-        cout << "|         Book Name          ""         Prize              |" << endl;
-        cout << "----------------------------------------------------------" << endl;
-        for (int i = 0; i < entries; i++) {
-            cout << "          " << shelf[i].book_name << "                        " << shelf[i].price << "         " << endl;
-        }
-        cout << "----------------------------------------------------------" << endl;
+
+    void display(int a)
+    {
+        cout<<a+1<<"\t"<<title<<"\t"<<cost<<endl;
     }
-    static void drop_duplicate(Library shelf[], int &entries) {
-        
-        cout << "\nDropping Duplicates......." << endl;
-        for (int i = 0; i < entries-1; i++) {
-            for (int j = i + 1; j < entries; j++) {
-                if (shelf[i].book_name == shelf[j].book_name) {
-                    for (int k = j; k < entries - 1; k++) {
-                        shelf[k] = shelf[k + 1];
-                        
+};
+int main()
+{
+    class book b1[10],b2[10],b3[10];
+    int i,j,k,n,temp,ch,n2,count=0,price[10],x=0,temp_cost[10],flag=0,q;
+    string name[10],temp_title[10];
+    do{
+        cout<<"1.Accept\t2.sort in descending order\t3.cost less than 500rs\t4.duplicate entries using temp array\t5.duplicate entries without temp array\t6.Books more than 500rs\t7.display\t8.Unsorted array\t9.Exit\nEnter choice:";
+        cin>>ch;
+        switch(ch)
+        {
+            case 1://info()
+                   cout<<"enter no.of books:";
+                   cin>>n;
+                   n+=count;
+                   n2=n;
+                   for(i=count;i<n;i++)
+                   {
+                    b1[i].accept();
+                    b2[i]=b1[i];
+                    b3[i]=b2[i];
+                    count++;
+                   }
+                   break;
+            case 2://sorting in descending order
+                    for(i=0;i<n;i++)
+                    {
+                        for(j=0;j<n-i-1;j++)
+                        {
+                            if(b1[j].cost<b1[j+1].cost)
+                            {
+                                temp=b1[j].cost;
+                                b1[j].cost=b1[j+1].cost;
+                                b1[j+1].cost=temp;
+                            }
+                        }
+                    }
+                    break;
+            case 3://display books having cost less than 500rs
+                    q=0;
+                   for(i=0;i<n;i++)
+                   {
+                    if(b1[i].cost<500)
+                    {
+                        name[q]=b1[i].title;
+                        price[q]=b1[i].cost;
+                        q++;
+                    }else{
+                        x++;
+                    }
+                   }
+                   cout<<"sr.no\tTitle\tCost"<<endl;
+                   for(i=0;i<q;i++)
+                   {
+                    cout<<i+1<<"\t"<<name[i]<<"\t"<<price[i]<<endl;
+                   }
+                   
+                   break;
+            
+            case 4://delete duplicate entries using temparary 
+                  q=0;
+                  for(i=0;i<n;i++)
+                  {
+                    for(j=0;j<n-1;j++)
+                    {
+                        if(b1[i].title==b1[j].title && b1[i].cost==b1[j].cost)
+                        {
+                            
+                        }else{
+                            temp_title[q]=b1[i].title;
+                            temp_cost[q]=b1[i].cost;
+                            q++;
+                        }
                     }
                     
-                    entries--; 
-                    j--; 
-                }
-            }
-        }
-    }
+                  }
+                   cout<<"sr.no\tTitle\tCost"<<endl;
+                   for(i=0;i<q;i++)
+                   {
+                    cout<<i+1<<"\t"<<temp_title[q]<<"\t"<<temp_cost[q]<<endl;
+                   }
+                  break;
 
-    
-    static void remove_duplicate(Library shelf[],int entries){
-    	bool map[entries];
-    	Library result[entries];
-        cout << "\nDropping Duplicates......." << endl;
-        for (int i = 0; i < entries; i++) {
-            for (int j = i + 1; j < entries; j++) {
-               if (shelf[i].book_name == shelf[j].book_name){
-               	    map[j]=true; 
-                }
-              }  
-            }
+            case 5://delete duplicate entries without using temp array
+                  q=0;
+                   for(i=0;i<n;i++)
+                  {
+                    for(j=0;j<n;j++)
+                    {
+                        if(b2[i].title==b2[j].title && b2[i].cost==b2[j].cost)
+                        {
+                           for(k=j;k<n;k++)
+                           {
+                            b2[k].title=b2[k+1].title;
+                            b2[k].cost=b2[k+1].cost;
+                           }
+                           n2--;
+                        }
+                    }
+                  }
+                   cout<<"sr.no\tTitle\tCost"<<endl;
+                   for(i=0;i<q;i++)
+                   {
+                    cout<<i+1<<"\t"<<b2[i].title<<"\t"<<b2[i].cost<<endl;
+                   }
+                   break;
             
-            int i=0,j=0;
-            while(i<entries){
-            	if(!map[i]){
-            		result[j]=shelf[i];
-            		j++;
-            	}
-            	i++;
-            }
-            for (int k = j; k < entries; k++) {
-                    result[k].book_name = "No_book";
-                    result[k].price = 0.0;
-           }
-        cout << "----------------------------------------------------------" << endl;
-        cout << "|         Book Name          ""         Prize              |" << endl;
-        cout << "----------------------------------------------------------" << endl;
-        for (int i = 0; i < entries; i++) {
-            cout << "          " << result[i].book_name << "                        " << result[i].price << "         " << endl;
+            case 6://no.of books having cost more than 500rs
+                  cout<<"No.of books having price more than 500rs are:"<<x<<endl;
+                  break;
+
+            case 7://display
+                   cout<<"Sr.no\tTitle\tcost"<<endl;
+                   for(i=0;i<n;i++)
+                   {
+                    b1[i].display(i);
+                   }
+                   break;
+                   
+            case 8://unsorted array
+                   cout<<"Sr.no\tTitle\tcost"<<endl;
+                   for(i=0;i<n;i++)
+                   {
+                     b3[i].display(i);
+                   }
         }
-        cout << "----------------------------------------------------------" << endl;  
-            
-    }
-
-    static void sort_books(Library shelf[], int entries) {
-        for (int i = 0; i < entries - 1; i++) {
-              for (int j = i + 1; j < entries; j++) {
-                
-                if (shelf[i].price < shelf[j].price) {
-             
-                    Library temp = shelf[i];
-                    shelf[i] = shelf[j];
-                    shelf[j] = temp;
-                }
-            }
-        }
-    }
-
-    
-
-    static void sort_in_range(Library shelf[], int target, int entries) {
-        int count = 0;
-        
-        cout << "Books Under Provided Prize:" << endl;
-        cout << "----------------------------------------------------------" << endl;
-        cout << "|         Book Name          ""         Prize              |" << endl;
-        cout << "----------------------------------------------------------" << endl;
-        
-        for (int i = 0; i < entries; i++) {
-            if (shelf[i].price < target){ 
-                cout << "        " << shelf[i].book_name << "                  ""          " << shelf[i].price << "             " << endl;
-                count++;
-            }
-        }
-        cout << "----------------------------------------------------------" << endl;
-        
-        cout << "\n\nNumber of Books Available Under Given Prize Tag: [ " << count <<" ]"<< endl;
-
-        count = 0; //dbg
-                                    
-        cout << "Books Above Provided Prize:" << endl;
-        cout << "----------------------------------------------------------" << endl;
-        cout << "|         Book Name          ""         Prize              |" << endl;
-        cout << "----------------------------------------------------------" << endl;
-        for (int i = 0; i < entries; i++) {
-            if (shelf[i].price >= target){
-                cout << "        " << shelf[i].book_name << "                           " << shelf[i].price << "             " << endl;
-                count++;
-            }
-        }
-        cout << "----------------------------------------------------------" << endl;
-        cout << "\n\nNumber of Books Available Above Given Prize Tag: [ " << count <<" ]"<< endl;
-     }
-    };
-
-
-int main() {
-    Library shelf[10];
-    int entries, choice;
-
-    cout << "Enter Number of Entries: ";
-    cin >> entries;
-
-    for (int i = 0; i < entries; i++) {
-        cout<<"Enter Details of Book - "<<i+1<<" : "<<endl;
-        shelf[i].add_book();
-    }
-
-    do {
-       cout << "\nOperation Menu:" << endl;
-        cout << "1. Sort Books Around a Prize" << endl;
-        cout << "2. Drop Duplicate ( Optimized ) " << endl;
-        cout << "3. Display" << endl;       
-        cout <<"4.  Sort By Prize Decending Order"<<endl;
-        cout << "5. Remove Duplicate ( Unoptimized ) " << endl;
-        cout << "6. Exit" << endl;
-        cout << "Enter your choice: ";
-        cin >> choice;
-
-        switch (choice) {
-            case 1: {
-                int target;
-                cout<<"Enter Price Around you Want to Sort :";
-                cin >>target;
-                Library :: sort_in_range(shelf, target,entries);
-                
-                break;
-            }
-            case 2: {
-                Library :: drop_duplicate(shelf, entries);
-                break;
-            }
-            case 3: {
-                Library :: print_shelf(shelf, entries);
-                break;
-            }
-            case 4:
-                 Library :: sort_books(shelf,entries);
-                 cout << "Books sorted by price." << endl;                 
-                 break;
-            case 5:
-            	 Library :: remove_duplicate(shelf, entries);
-            break;           
-            case 6:
-                cout << "Exiting..." << endl;
-                break;
-            default:
-                cout << "Invalid choice. Please try again." << endl;
-        }
-    } while (choice != 6);
-
+    }while(ch!=9);
     return 0;
 }
