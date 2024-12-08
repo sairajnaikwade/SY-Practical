@@ -1,380 +1,201 @@
 #include<iostream>
 #include<iomanip>
-#include<cstring>
 using namespace std;
-
-class Roll {
-public:
-	int roll;
-	string classs;
-	string name;
-	int attended=0;
-    float opinion=0;
-
-	void accept(int x) {
-		cout<<"Student no. "<<x<<endl;
-		cout<<"Enter the Roll No.: ";
-		cin>>roll;
-		cout<<"Enter the Class:";
-		cin>>classs;
-
-
-		cout<<"Enter the Name:";
-		cin.ignore();
-		getline(cin, name);
-	}
-
-	void display() {
-		cout << setw(15) << left << classs
-		     << setw(15) << left << roll
-		     << setw(15) << left << name << endl;
-	}
-
-    void display2()
+class student{
+    public:
+    string name,clas;
+    int roll;
+    char div;
+    int ans[5];
+    void info()
     {
-        	cout << setw(15) << left << classs
-		     << setw(15) << left << roll
-		     << setw(15) << left << name 
-             << setw(15) << left << opinion <<endl;
+        cout<<"\nName:";
+        cin>>name;
+        cout<<"Class:";
+        cin>>clas;
+        cout<<"Roll no:";
+        cin>>roll;
+        cout<<"Division:";
+        cin>>div;
     }
-
-    
-
-
-
-
+    void display()
+    {
+        cout<<roll<<"\t\t"<<name<<"\t\t"<<clas<<"\t\t"<<div<<endl;
+    }
+    void feed()
+    {
+        cout<<"\nEnter 1 for yes and 0 for No:"<<endl;
+        cout<<"\n1.Was the event well-organized?(1/0):";
+        cin>>ans[0];
+        cout<<"\n2.Did you find the event informative?";
+        cin>>ans[1];
+        cout<<"\n3.Was the event duration appropriate?";
+        cin>>ans[2];
+        cout<<"\n4.Did the event meet your expectations?";
+        cin>>ans[3];
+        cout<<"\n5.Were the speakers/presenters engaging?";
+        cin>>ans[4];
+    }
 };
-
 int main()
-{	Roll a[20];
-	int i,ch,N=0,temproll,flag,A=0,count=0,tempattended,check=0;
-    int  q1,q2,q3,q4,q5;
-    float total=0;
-    float opi=0;
-	string tempclasss;
-
-	do
-	{
-		cout<<"\nMenu\n1.Accept\n2.Display\n3.Feed\n4.Display Feed\n5.Search(Using Linear Search)\n6.Search(Using Binary Search)\n7.FeedBack\n8.Display Opinion\n9.Exit\n";
-		cin>>ch;
-
-		switch (ch)
-		{
-		case 1:
-			cout<<"Enter the Total No. of Students you are going to Enter: ";   //I made changes and removed the extra object 'b'...
-			cin>>N;
-			for ( i = 0; i < N; i++)
-			{
-				a[i].accept(i+1);
-			}
-
-			break;
-
-		case 2:
-			cout << setw(15) << left << "Class"                            //It will display 'a', as we are going to perform operation on 'a' only...
-			     << setw(15) << left << "Roll no"
-			     << setw(10) << right << "Name" << endl;
-
-			cout << setfill('-') << setw(65) << "" << setfill(' ') << endl;
-
-			for ( i = 0; i < N; i++)
-			{
-				a[i].display();
-			}
-
-			break;
-
-		case 3:
-
-
-
-			cout<<"Enter the Total No. of Students who Attended:";
-			cin>>A;
-
-			for ( i = 0; i < A; i++)
-			{
-				flag=1;
-
-				cout<<"Student no. "<<i+1<<endl;
-
-				cout<<"Enter the Roll No.: ";
-				cin>>temproll;
-				cout<<"Enter the Class:";
-				cin.ignore();
-				getline(cin, tempclasss);
-				cout<<endl;
-
-				for ( int j = 0; j < N; j++)
-				{
-					if (a[j].roll==temproll && (a[j].classs==tempclasss))    //it will check if student is in data base or not...
-					{
-						a[j].attended=1;                                    //if yes then it will change the attended variable...
-						flag=0;
-						break;
-					}
-
-				}
-				if (flag==1)
-				{
-					cout<<" Student Not in Database\n";
-				}
-
-
-			}
-
-
-
-			break;
-
-		case 4:
-
-
-			cout<<"\nYour Feed is:\n";
-
-			cout << setw(15) << left << "Class"
-			     << setw(15) << left << "Roll no"<< endl;
-
-			cout << setfill('-') << setw(65) << "" << setfill(' ') << endl;
-
-			for ( i = 0; i < N; i++)
-			{
-				if (a[i].attended==1)
-				{
-					a[i].display();
-				}
-
-			}
-
-
-
-			break;
-
-		case 5:
-
-			cout<<"Enter the Roll no. of student You want to Search:";
-			cin>>temproll;
-			cout<<"Enter the Class of Student:";
-			cin.ignore();
-			cin>>tempclasss;
-			flag=1;
-			check=0;                     //it will check if the student we are searching is in our 'a' or not...
-			for ( i = 0; i < N; i++)
-
-			{	if(temproll==a[i].roll && (a[i].classs==tempclasss))
-
-				{	if (a[i].attended==1)
-					{	check=1;
-						cout<<"Student Has Attended the Program\n";
-						flag=0;
-						break;
-					}
-
-				}
-
-			}
-			if (flag==1)
-			{
-				cout<<"Nope student Didnt Attend\n";
-			}
-			else if(check==0)
-			{
-				cout<<"\nStudent Didn't found in database\n";
-			}
-
-
-
-			break;
-
-
-		case 6:
-			int low,mid,high;
-
-			for ( i = 0; i < N; i++)                //sorting the Array of Objects
-			{
-				for (int j = 0; j < N-1; j++)
-				{
-					if (a[j].roll>a[j+1].roll)
-					{
-						temproll=a[j].roll;
-						a[j].roll=a[j+1].roll;
-						a[j+1].roll=temproll;
-
-
-						tempclasss=a[j].classs;
-						a[j].classs=a[j+1].classs;
-						a[j+1].classs=tempclasss;
-
-						tempattended=a[j].attended;                //swapping the attended var. as well...
-						a[j].attended=a[j+1].attended;
-						a[j+1].attended=tempattended;
-
-					}
-
-				}
-
-			}
-
-
-			cout<<"\nYour Sorted Feed is:\n";
-			for ( i = 0; i < A; i++)
-			{
-				cout << setw(15) << left << "Class"
-				     << setw(15) << left << "Roll no"<< endl;
-
-				cout << setfill('-') << setw(65) << "" << setfill(' ') << endl;
-
-				for ( i = 0; i < N; i++)
-				{
-					if (a[i].attended==1) {
-
-						a[i].display();
-					}
-
-				}
-			}
-
-
-
-			high=N-1;
-			low=0;
-			mid=(low+high)/2;
-
-			flag=0;
-
-			cout<<"Enter the Roll no. of student You want to Search:";
-			cin>>temproll;
-			cout<<"Enter the Class of Student:";
-			cin>>tempclasss;
-
-			check=0;
-
-			while (low<=high)
-			{
-				if(temproll==a[mid].roll && (a[mid].classs==tempclasss))
-				{	if (a[mid].attended==1)
-					{
-						cout<<"Student Has Attended the Program\n";
-						flag=1;
-						check=1;                                       //same use, i commented out in case 5 earlier...
-						break;
-					}
-
-
-				}
-				else if(temproll>a[mid].roll)
-				{
-					low=mid+1;
-				}
-				else
-				{
-					high=mid-1;
-				}
-				mid=(low+high)/2;
-			}
-			if(flag==0)
-			{
-				cout<<"\nStudent Didn't Attend the Program\n";
-			}
-			else if(check==0)
-			{
-				cout<<"\nStudent Didn't found in database\n";
-			}
-
-			break;
-
-        case 7:
-		       int studentno=0;
-               for ( i = 0; i < A; i++)
-               {for (  i = 0; i < N; i++)
-				{   
-					if (a[i].attended==1) {
-						
-                        q1=q2=q3=q4=q5=0;
-                        opi=0;
-                        float average=0;
-                        cout<<"Student "<<studentno+1<<endl;
-                         cout<<"1.Do you uhink Traing Program was worth it?\n";
-                         cout<<"(1)Yes\n(0)No\n";
-                         cin>>q1;
-                         cout<<"2.Do you think college made proper use of your precious time by inviting the respective Guest?";
-                          cout<<"\n(1)Yes\n(0)No\n";
-                         cin>>q2;
-                         cout<<"DO you think we were Doing time pass, By calling you at Holiday???";
-                         cout<<"\n(0)Yes\n(1)No\n";
-                         cin>>q3;
-                         cout<<"Did you get Gyst of Trainer's Lecture Or you were sleeping??\n";
-                         cout<<"(1)Yes\n(0)No\n";
-                         cin>>q4;
-                         cout<<"Shall we force you Again for Such type of programs in future again?\nNOTE:not like your choice matters";
-                         cout<<"\n(1)Yes\n(0)No\n";
-                         cin>>q5;
-                         
-                        
-                        opi=q1+q2+q3+q4+q5;
-                        average=(opi/5)*100;
-                        cout<<average;
-                        a[i].opinion=average;
-						total+=opi;
-                        studentno++;
-
-					}
-                    
-				}
+{
+    class student s[10];
+    int ch,i,j,n,tempRol,flag,low,high,mid,temp=0,pos=0,temp2,count=0,sr;
+    string tempClas;
+    int good[10];
+    do{
+        cout<<"\n1.Add information\t2.Display\t3.Linear search\t4.Binary search\t5.Feedback\t6.Analysis\t7.Exit\nEnter choice:";
+    cin>>ch;
+    switch(ch)
+    {
+        case 1://information
+              if(count<10)
+              {
+               cout<<"Enter no.of students:";
+               cin>>n;
+               temp2=pos+n;
+               for(i=temp;i<pos+n;i++)
+               {
+                s[i].info();
+                temp++;
+                count++;
                }
-             
-        break;
+               pos=i;
+              }else{
+                cout<<"\nlist is full";
+              }
+              for(i=0;i<count;i++)
+              {
+               good[i]=-1;
+              }
+               break;
 
-        case 8:
+        case 2://display
+              cout<<"Roll no\t\tName\t\tClass\t\tDivision\n";
+              for(i=0;i<temp2;i++)
+              {
+                s[i].display();
+              }
+              break;
+              
+        case 3://linear search
+                flag=0;
+               cout<<"\nEnter roll number for search:";
+               cin>>tempRol;
+               cout<<"Enter class:";
+               cin>>tempClas;
+               for(i=0;i<temp2;i++)
+               {
+                if(s[i].roll==tempRol && s[i].clas==tempClas)
+                {
+                    flag=1;
+                    break;
+                }
+               }
+               if(flag==1)
+               {
+                cout<<"\nStudent Attended the training program";
+               }else{
+                cout<<"\nNot attended the training program";
+               }
+               break;
+               
+        case 4://binary search 
+               for(i=0;i<count;i++)  //sorting
+               {
+                for(j=i;j<count-i-1;j++)
+                {
+                    if(s[j].roll>s[j+1].roll)
+                    {
+                        //swapping of roll numbers
+                        tempRol=s[j].roll;
+                        s[j].roll=s[j+1].roll;
+                        s[j+1].roll=tempRol;
+                        //swapping of class
+                        tempClas=s[j].clas;
+                        s[j].clas=s[j+1].clas;
+                        s[j+1].clas=tempClas;
 
-        cout<<"\nAttended Students Opinion is:\n";		
-             cout << setw(15) << left << "Class"
-		     << setw(15) << left << "Roll"
-		     << setw(15) << left << "Name" 
-             << setw(15) << left << "Opinion(out of 100)" <<endl;
-
-            for ( i = 0; i < A; i++)
-			{
-		
-				cout << setfill('-') << setw(65) << "" << setfill(' ') << endl;
-
-				for ( i = 0; i < N; i++)
-				{
-					if (a[i].attended==1) {
-
-						a[i].display2();
-					}
-
-				}
-			}
-          
-          if(((total/(A*5))*100) >= 70)
-          {
-            cout<<"Students Are Interested in such Future Programs...\n";
-            cout<<((total/(A*5))*100)<<"was the Percentile";
-          }
-          else{
-            cout<<"Students Not Interested...\n";
-            cout<<((total/(A*5))*100)<<"was the Percentile";
-          }
+                    }
+                }
+               }
+               cout<<"\nEnter roll number for search:";
+               cin>>tempRol;
+               cout<<"Enter class:";
+               cin>>tempClas;
+               low=0;
+               high=temp2-1;
+               while(low<=high)  //binary search
+               {
+                mid=(low+high)/2;
+                if(s[mid].roll==tempRol && s[mid].clas==tempClas)
+                {
+                    cout<<"\nStudent Attended the training program";
+                    break;
+                }else if(s[mid].roll>tempRol)
+                {
+                    high=mid-1;
+                }else{
+                    low=mid+1;
+                }
+               }
+               if(low>high)
+               {
+                cout<<"\nNot attended the training program";
+               }
+               break;
         
+        case 5://feedback
+               flag=0;
+               cout<<"\nEnter roll number for search:";
+               cin>>tempRol;
+               cout<<"Enter class:";
+               cin>>tempClas;
+               for(i=0;i<temp2;i++)
+               {
+                if(s[i].roll==tempRol && s[i].clas==tempClas)
+                {
+                    flag=1;
+                    break;
+                }
+               }
+               if(flag==1)
+               {
+                s[i].feed();
+                good[i]=0;
+               
+                for(j=0;j<5;j++)
+                {
+                    if(s[i].ans[j]==1)
+                    {
+                        good[i]++;
+                    }
+                }
+                good[i]=(good[i]*100)/5;
+               }else{
+                cout<<"\nNot attended the training program";
+               }
+            break;
 
-        break;
-
-
-		case 9:
-			break;
-
-
-
-		default:
-			cout<<"Wrong Choice...\n";
-			break;
-		}
-
-
-	} while (ch!=9);
-
-
-
-	return 0;
+        case 6://analysis
+               sr=1;
+               cout<<"\nSr.no\tRoll no\tClass\tName\tDivision\tRating\tRemark"<<endl;
+               for(i=0;i<count;i++)
+               {
+                if(good[i]!=-1)
+                {
+                cout<<sr<<"\t"<<s[i].roll<<"\t"<<s[i].clas<<"\t"<<s[i].name<<"\t"<<s[i].div<<"\t\t"<<good[i]<<"%";
+                if(good[i]>=80)
+                {
+                 cout<<"\tEvent should happen"<<endl;
+                }else{
+                 cout<<"\tEvent should NOT happen"<<endl;
+                }
+                sr++;
+                }
+                
+               }
+               break;
+    }
+    }while(ch!=7);
 }
